@@ -43,7 +43,7 @@ namespace zFREP
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("Mesh Field", " Mesh Field", "Mesh Field", GH_ParamAccess.list);
+            pManager.AddGenericParameter("Mesh Field", " Field", "Mesh Field", GH_ParamAccess.list);
         }
 
         /// <summary>

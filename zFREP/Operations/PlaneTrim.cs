@@ -27,7 +27,7 @@ namespace zFREP
         {
             pManager.AddMeshParameter("Base Mesh", "Mesh", "Base Mesh.", GH_ParamAccess.item);
             pManager.AddGenericParameter("Field", "Field", "Field to be trimmed.", GH_ParamAccess.item);
-            pManager.AddPlaneParameter("Trim Plane", "Plane", "Trim Plane.", GH_ParamAccess.item);
+            pManager.AddPlaneParameter("Trim Plane", "Plane", "Trim Plane.", GH_ParamAccess.list);
             pManager.AddNumberParameter("Trim Value", "Trim Value", "Optional value set for all points in trim.", GH_ParamAccess.item, 1.00d);
         }
 
@@ -47,32 +47,39 @@ namespace zFREP
         {
             Mesh mesh = null;
             IField3d<double> f = null;
-            Plane plane = new Plane();
+            List<Plane> planes = new List<Plane>();
             double val = 1.00d;
 
             if (!DA.GetData(0, ref mesh)) return;
             if (!DA.GetData(1, ref f)) return;
-            if (!DA.GetData(2, ref plane)) return;
+            if (!DA.GetDataList(2, planes)) return;
             if (!DA.GetData(3, ref val)) return;
 
             var hem = mesh.ToHeMesh();
             var fn = MeshField3d.Double.Create(hem);
 
-            List<double> vals = new List<double>();
+            var vals = new List<double>();
 
             foreach (Point3d p in mesh.Vertices)
             {
-                Vector3d vec = plane.Origin - p;
-                double proj = vec * plane.Normal;
+                double v = f.ValueAt(p);
+                foreach (var plane in planes)
+                {
+                    var vec = plane.Origin - p;
+                    double proj = vec * plane.Normal;
 
-                if (proj > 0) vals.Add(val);
-
-                else vals.Add(f.ValueAt(p));
+                    if (proj > 0)
+                    {
+                        v = val;
+                        break;
+                    }
+                }
+                vals.Add(v);
             }
+
             fn.Set(vals);
 
             DA.SetData(0, fn);
-
         }
 
         public override GH_Exposure Exposure
