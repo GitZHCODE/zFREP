@@ -62,6 +62,7 @@
     <Compile Include="Field\BlendFields.cs" />
     <Compile Include="Field\MeshFieldMesh.cs" />
     <Compile Include="Field\MeshFieldPoint.cs" />
+    <Compile Include="Utils\NodalEdgeFrames.cs" />
     <Compile Include="Utils\EdgeFrames.cs" />
     <Compile Include="Operations\Difference.cs" />
     <Compile Include="Display\FieldDisplay.cs" />
